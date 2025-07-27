@@ -3,13 +3,14 @@ name: Deploy to Server
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
@@ -21,25 +22,54 @@ jobs:
         docker images | grep gichevaart
         docker save $(docker images | grep gichevaart | awk '{print $1":"$2}' | tr '\n' ' ') | gzip > gichevaart-images.tar.gz
         ls -lh gichevaart-images.tar.gz
-
-    - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.8.0
-      with:
-        ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
-
-    - name: Copy files to server
+        
+    - name: Create SSH key file
       run: |
-        scp -o StrictHostKeyChecking=no gichevaart-images.tar.gz docker-compose.yml root@nerdstips.com:/tmp/
-
-    - name: Deploy on server
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        
+    - name: Deploy to server
       run: |
-        ssh -o StrictHostKeyChecking=no root@nerdstips.com << 'EOF'
-          mkdir -p /var/www/gichevaart
-          mv /tmp/docker-compose.yml /var/www/gichevaart/
-          cd /var/www/gichevaart
-          docker load < /tmp/gichevaart-images.tar.gz
-          docker compose down || true
-          docker compose up -d
-          rm /tmp/gichevaart-images.tar.gz
-          docker ps | grep gichevaart
+        # Create app directory on server
+        ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+          "sudo mkdir -p /var/www/gichevaart && sudo chown ${{ secrets.SERVER_USER }}:${{ secrets.SERVER_USER }} /var/www/gichevaart"
+        
+        # Copy files to server
+        echo "Copying files to server..."
+        scp -i ~/.ssh/id_rsa gichevaart-images.tar.gz docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/gichevaart/
+        
+        # Run deployment on server
+        ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+          bash << 'EOF'
+        
+        # Navigate to app directory
+        cd /var/www/gichevaart
+        
+        # Load Docker images
+        echo "Loading Docker images..."
+        sudo docker load < gichevaart-images.tar.gz
+        
+        # Stop existing containers
+        echo "Stopping existing containers..."
+        sudo docker compose down || true
+        
+        # Start services
+        echo "Starting Docker services..."
+        sudo docker compose up -d
+        
+        # Cleanup
+        rm gichevaart-images.tar.gz
+        
+        # Show running containers
+        echo "Running containers:"
+        sudo docker ps | grep gichevaart
+        
+        echo "Deployment completed successfully!"
+        
         EOF
+        
+    - name: Cleanup
+      run: |
+        rm -f ~/.ssh/id_rsa
