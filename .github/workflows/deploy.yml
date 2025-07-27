@@ -22,22 +22,20 @@ jobs:
         docker save $(docker images | grep gichevaart | awk '{print $1":"$2}' | tr '\n' ' ') | gzip > gichevaart-images.tar.gz
         ls -lh gichevaart-images.tar.gz
 
-    - name: Setup SSH
+    - name: Create SSH key file
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
-        chmod 600 ~/.ssh/deploy_key
+        echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H nerdstips.com >> ~/.ssh/known_hosts
-        # Test the key
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key root@nerdstips.com "echo 'SSH connection successful'"
 
     - name: Copy files to server
       run: |
-        scp -i ~/.ssh/deploy_key gichevaart-images.tar.gz docker-compose.yml root@nerdstips.com:/tmp/
+        scp -i ~/.ssh/id_rsa gichevaart-images.tar.gz docker-compose.yml root@nerdstips.com:/tmp/
 
     - name: Deploy on server
       run: |
-        ssh -i ~/.ssh/deploy_key root@nerdstips.com << 'EOF'
+        ssh -i ~/.ssh/id_rsa root@nerdstips.com << 'EOF'
           mkdir -p /var/www/gichevaart
           mv /tmp/docker-compose.yml /var/www/gichevaart/
           cd /var/www/gichevaart
@@ -47,3 +45,7 @@ jobs:
           rm /tmp/gichevaart-images.tar.gz
           docker ps | grep gichevaart
         EOF
+        
+    - name: Cleanup
+      run: |
+        rm -f ~/.ssh/id_rsa
