@@ -17,8 +17,9 @@ jobs:
 
     - name: Build Docker images
       run: |
-        docker-compose build
-        docker save gichevaart-frontend gichevaart-backend | gzip > gichevaart-images.tar.gz
+        docker compose build
+        docker images | grep gichevaart
+        docker save $(docker images | grep gichevaart | awk '{print $1":"$2}' | head -2) | gzip > gichevaart-images.tar.gz
 
     - name: Copy files to server
       uses: appleboy/scp-action@v0.1.5
@@ -38,8 +39,8 @@ jobs:
         script: |
           cd /var/www/gichevaart
           docker load < gichevaart-images.tar.gz
-          docker-compose down
-          docker-compose up -d
+          docker compose down || true
+          docker compose up -d
           rm gichevaart-images.tar.gz
           
           # Nginx is already configured in the nutritrack-web container
