@@ -28,6 +28,8 @@ jobs:
         echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
         chmod 600 ~/.ssh/deploy_key
         ssh-keyscan -H nerdstips.com >> ~/.ssh/known_hosts
+        # Test the key
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key root@nerdstips.com "echo 'SSH connection successful'"
 
     - name: Copy files to server
       run: |
