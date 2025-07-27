@@ -22,20 +22,18 @@ jobs:
         docker save $(docker images | grep gichevaart | awk '{print $1":"$2}' | tr '\n' ' ') | gzip > gichevaart-images.tar.gz
         ls -lh gichevaart-images.tar.gz
 
-    - name: Create SSH key file
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H nerdstips.com >> ~/.ssh/known_hosts
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
 
     - name: Copy files to server
       run: |
-        scp -i ~/.ssh/id_rsa gichevaart-images.tar.gz docker-compose.yml root@nerdstips.com:/tmp/
+        scp -o StrictHostKeyChecking=no gichevaart-images.tar.gz docker-compose.yml root@nerdstips.com:/tmp/
 
     - name: Deploy on server
       run: |
-        ssh -i ~/.ssh/id_rsa root@nerdstips.com << 'EOF'
+        ssh -o StrictHostKeyChecking=no root@nerdstips.com << 'EOF'
           mkdir -p /var/www/gichevaart
           mv /tmp/docker-compose.yml /var/www/gichevaart/
           cd /var/www/gichevaart
@@ -45,7 +43,3 @@ jobs:
           rm /tmp/gichevaart-images.tar.gz
           docker ps | grep gichevaart
         EOF
-        
-    - name: Cleanup
-      run: |
-        rm -f ~/.ssh/id_rsa
