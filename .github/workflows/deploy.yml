@@ -19,28 +19,29 @@ jobs:
       run: |
         docker compose build
         docker images | grep gichevaart
-        docker save $(docker images | grep gichevaart | awk '{print $1":"$2}' | head -2) | gzip > gichevaart-images.tar.gz
+        docker save $(docker images | grep gichevaart | awk '{print $1":"$2}' | tr '\n' ' ') | gzip > gichevaart-images.tar.gz
+        ls -lh gichevaart-images.tar.gz
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+        ssh-keyscan -H nerdstips.com >> ~/.ssh/known_hosts
 
     - name: Copy files to server
-      uses: appleboy/scp-action@v0.1.5
-      with:
-        host: nerdstips.com
-        username: root
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        source: "gichevaart-images.tar.gz,docker-compose.yml"
-        target: "/var/www/gichevaart"
+      run: |
+        scp -i ~/.ssh/deploy_key gichevaart-images.tar.gz docker-compose.yml root@nerdstips.com:/tmp/
 
     - name: Deploy on server
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: nerdstips.com
-        username: root
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        script: |
+      run: |
+        ssh -i ~/.ssh/deploy_key root@nerdstips.com << 'EOF'
+          mkdir -p /var/www/gichevaart
+          mv /tmp/docker-compose.yml /var/www/gichevaart/
           cd /var/www/gichevaart
-          docker load < gichevaart-images.tar.gz
+          docker load < /tmp/gichevaart-images.tar.gz
           docker compose down || true
           docker compose up -d
-          rm gichevaart-images.tar.gz
-          
-          # Nginx is already configured in the nutritrack-web container
+          rm /tmp/gichevaart-images.tar.gz
+          docker ps | grep gichevaart
+        EOF
