@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import ArtworkImage from '@/components/ArtworkImage'
 import SkeletonLoader from '@/components/SkeletonLoader'
 import Lightbox from '@/components/Lightbox'
 
-export default function Gallery() {
+function GalleryContent() {
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('search') || ''
   
@@ -279,5 +279,13 @@ export default function Gallery() {
         </div>
       </div>
     </>
+  )
+}
+
+export default function Gallery() {
+  return (
+    <Suspense fallback={<SkeletonLoader type="gallery" />}>
+      <GalleryContent />
+    </Suspense>
   )
 }
