@@ -38,7 +38,7 @@ jobs:
         
         # Copy files to server
         echo "Copying files to server..."
-        scp -i ~/.ssh/id_rsa gichevaart-images.tar.gz docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/gichevaart/
+        scp -i ~/.ssh/id_rsa gichevaart-images.tar.gz docker-compose.prod.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/gichevaart/
         
         # Run deployment on server
         ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
@@ -53,11 +53,11 @@ jobs:
         
         # Stop existing containers
         echo "Stopping existing containers..."
-        sudo docker compose down || true
+        sudo docker compose -f docker-compose.prod.yml down || true
         
         # Start services
         echo "Starting Docker services..."
-        sudo docker compose up -d
+        sudo docker compose -f docker-compose.prod.yml up -d
         
         # Cleanup
         rm gichevaart-images.tar.gz
