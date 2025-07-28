@@ -1,8 +1,15 @@
 import './globals.css'
+import Navigation from '@/components/Navigation'
 
 export const metadata = {
-  title: 'Gicheva Art',
-  description: 'Abstract Art by Radka Gicheva',
+  title: 'Gicheva Art - Contemporary Abstract Paintings',
+  description: 'Explore the vibrant abstract paintings of Radka Gicheva. Original artworks featuring bold colors and expressive forms. International shipping available.',
+  keywords: 'abstract art, contemporary painting, Radka Gicheva, Bulgarian artist, original artwork',
+  openGraph: {
+    title: 'Gicheva Art - Contemporary Abstract Paintings',
+    description: 'Explore the vibrant abstract paintings of Radka Gicheva',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({
@@ -12,7 +19,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <a href="#main-content" className="skip-to-main">
+          Skip to main content
+        </a>
+        <Navigation />
+        <main id="main-content" className="pt-20">
+          {children}
+        </main>
+      </body>
     </html>
   )
 }
