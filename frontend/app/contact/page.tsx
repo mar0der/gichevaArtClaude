@@ -204,17 +204,17 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full px-8 py-4 font-medium tracking-wider transition-all transform ${
+                  className={`w-full px-8 py-4 font-medium tracking-wider transition-all duration-motion transform button-hover ${
                     isSubmitting 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-[#d4a574] hover:bg-[#b8935f] hover:-translate-y-0.5 shadow-lg hover:shadow-xl'
-                  } text-white rounded-lg`}
+                      : 'bg-accent hover:bg-accent/90 shadow-card hover:shadow-card-hover'
+                  } text-white rounded-button`}
                 >
                   {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
                 </button>
 
                 {submitStatus === 'success' && (
-                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-center animate-fade-in" role="status" aria-live="polite">
+                  <div className="p-4 bg-status-success/10 border border-status-success/30 rounded-card text-status-success text-center animate-fade-in" role="status" aria-live="polite">
                     <svg className="w-5 h-5 inline-block mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
@@ -223,7 +223,7 @@ export default function Contact() {
                 )}
 
                 {submitStatus === 'error' && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-center animate-fade-in" role="alert" aria-live="assertive">
+                  <div className="p-4 bg-status-error/10 border border-status-error/30 rounded-card text-status-error text-center animate-fade-in" role="alert" aria-live="assertive">
                     <svg className="w-5 h-5 inline-block mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>

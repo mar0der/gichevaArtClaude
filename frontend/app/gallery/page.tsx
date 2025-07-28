@@ -107,35 +107,35 @@ function GalleryContent() {
           </div>
           
           {/* Filters */}
-          <div className="mb-12 space-y-6 bg-gray-50 p-6 rounded-lg">
+          <div className="mb-12 space-y-6 bg-gradient-start p-6 rounded-card">
             <div className="flex flex-wrap gap-3">
               <span className="text-sm font-medium text-gray-700 self-center">Show:</span>
               <button 
                 onClick={() => setActiveFilter('all')}
-                className={`px-6 py-2.5 text-sm font-medium rounded-full transition-all ${
+                className={`px-6 py-2.5 text-sm font-medium rounded-full transition-all duration-motion button-hover ${
                   activeFilter === 'all' 
-                    ? 'bg-[#d4a574] text-white shadow-md' 
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                    ? 'bg-accent text-white shadow-card' 
+                    : 'bg-white text-primary hover:bg-gradient-end border border-gray-300'
                 }`}
               >
                 All Works
               </button>
               <button 
                 onClick={() => setActiveFilter('available')}
-                className={`px-6 py-2.5 text-sm font-medium rounded-full transition-all ${
+                className={`px-6 py-2.5 text-sm font-medium rounded-full transition-all duration-motion button-hover ${
                   activeFilter === 'available' 
-                    ? 'bg-[#d4a574] text-white shadow-md' 
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                    ? 'bg-accent text-white shadow-card' 
+                    : 'bg-white text-primary hover:bg-gradient-end border border-gray-300'
                 }`}
               >
                 Available
               </button>
               <button 
                 onClick={() => setActiveFilter('sold')}
-                className={`px-6 py-2.5 text-sm font-medium rounded-full transition-all ${
+                className={`px-6 py-2.5 text-sm font-medium rounded-full transition-all duration-motion button-hover ${
                   activeFilter === 'sold' 
-                    ? 'bg-[#d4a574] text-white shadow-md' 
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                    ? 'bg-accent text-white shadow-card' 
+                    : 'bg-white text-primary hover:bg-gradient-end border border-gray-300'
                 }`}
               >
                 Sold
@@ -146,7 +146,7 @@ function GalleryContent() {
               <select 
                 value={filters.size}
                 onChange={(e) => setFilters({...filters, size: e.target.value})}
-                className="px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white focus:border-[#d4a574] focus:outline-none transition-colors"
+                className="px-4 py-2.5 text-sm border border-gray-300 rounded-button bg-white transition-colors duration-motion"
               >
                 <option value="all">Size: All</option>
                 <option value="small">Small (under 12")</option>
@@ -157,7 +157,7 @@ function GalleryContent() {
               <select 
                 value={filters.price}
                 onChange={(e) => setFilters({...filters, price: e.target.value})}
-                className="px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white focus:border-[#d4a574] focus:outline-none transition-colors"
+                className="px-4 py-2.5 text-sm border border-gray-300 rounded-button bg-white transition-colors duration-motion"
               >
                 <option value="all">Price: All</option>
                 <option value="low">Under $500</option>
@@ -168,7 +168,7 @@ function GalleryContent() {
               <select 
                 value={filters.medium}
                 onChange={(e) => setFilters({...filters, medium: e.target.value})}
-                className="px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white focus:border-[#d4a574] focus:outline-none transition-colors"
+                className="px-4 py-2.5 text-sm border border-gray-300 rounded-button bg-white transition-colors duration-motion"
               >
                 <option value="all">Medium: All</option>
                 <option value="Acrylic">Acrylic</option>
@@ -195,31 +195,31 @@ function GalleryContent() {
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div 
-                  className="cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
+                  className="cursor-pointer transform transition-all duration-motion hover:-translate-y-1 group"
                   onClick={() => openLightbox(index)}
                 >
-                  <div className="relative aspect-[4/5] bg-gray-100 overflow-hidden rounded-lg shadow-md group-hover:shadow-xl transition-shadow duration-300">
+                  <div className="relative aspect-[4/5] bg-gradient-start overflow-hidden rounded-card shadow-card hover:shadow-card-hover transition-all duration-motion card-hover">
                     <ArtworkImage 
                       title={artwork.title} 
                       width={400} 
                       height={500} 
-                      className="transform transition-transform duration-700 group-hover:scale-110"
+                      className="transform transition-transform duration-motion group-hover:scale-110"
                     />
                     {!artwork.available && (
-                      <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-xs font-medium uppercase tracking-wider">
+                      <div className="absolute top-4 right-4 bg-status-error text-white px-3 py-1 text-xs font-medium uppercase tracking-wider rounded">
                         SOLD
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-motion" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-motion">
                       <p className="text-sm font-medium mb-1">{artwork.medium}</p>
                       <p className="text-xs opacity-90">Click to view fullscreen</p>
                     </div>
                   </div>
                   <div className="mt-4">
-                    <h3 className="text-lg font-medium text-gray-900 group-hover:text-[#d4a574] transition-colors">{artwork.title}</h3>
+                    <h3 className="text-lg font-medium text-primary group-hover:text-accent transition-colors duration-motion">{artwork.title}</h3>
                     <p className="text-sm text-gray-600 mt-1">{artwork.size}"</p>
-                    <p className="text-lg font-semibold mt-2 text-gray-900">{artwork.price}</p>
+                    <p className="text-lg font-semibold mt-2 text-accent">{artwork.price}</p>
                   </div>
                 </div>
               </div>

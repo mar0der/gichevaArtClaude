@@ -26,7 +26,7 @@ export default function Home() {
       <QuoteSection />
 
       {/* Featured Works */}
-      <section className="py-24 px-6 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-24 px-6 bg-gradient-to-b from-surface to-gradient-start">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16 text-center">
             <h2 className="text-5xl md:text-6xl mb-4">Featured Works</h2>
@@ -42,7 +42,7 @@ export default function Home() {
           <div className="text-center">
             <Link 
               href="/gallery" 
-              className="inline-block px-10 py-4 bg-[#d4a574] text-white font-medium tracking-wider hover:bg-[#b8935f] transform hover:-translate-y-0.5 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="inline-block px-10 py-4 bg-accent text-white font-medium tracking-wider hover:bg-accent/90 transform hover:-translate-y-1 transition-all duration-motion shadow-card hover:shadow-card-hover rounded-button button-hover"
             >
               VIEW FULL GALLERY
             </Link>
@@ -51,16 +51,16 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-gray-900 text-white">
+      <footer className="py-16 px-6 bg-primary text-white">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-            <h3 className="text-2xl font-bold mb-4 md:mb-0" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h3 className="text-2xl font-bold mb-4 md:mb-0">
               GICHEVA ART
             </h3>
             <div className="flex items-center space-x-6">
-              <a href="#" className="hover:text-[#d4a574] transition-colors">Newsletter</a>
-              <a href="https://instagram.com/gicheva.art" target="_blank" rel="noopener noreferrer" className="hover:text-[#d4a574] transition-colors">Instagram</a>
-              <a href="#" className="hover:text-[#d4a574] transition-colors">Saatchi Art</a>
+              <a href="#" className="hover:text-accent transition-colors duration-motion">Newsletter</a>
+              <a href="https://instagram.com/gicheva.art" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors duration-motion">Instagram</a>
+              <a href="#" className="hover:text-accent transition-colors duration-motion">Saatchi Art</a>
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
@@ -91,10 +91,10 @@ function HeroContent() {
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
       </div>
-      <h1 className="text-5xl md:text-6xl mb-3 tracking-tight">Colors of the Wind</h1>
+      <h1 className="text-5xl md:text-6xl mb-3 tracking-tight text-primary">Colors of the Wind</h1>
       <p className="text-lg text-gray-600 mb-8 font-light">23.6 W x 35.4 H • Mixed Media on Canvas</p>
       <div className="animate-bounce">
-        <span className="text-[#d4a574] text-sm font-medium tracking-wider">SCROLL TO EXPLORE</span>
+        <span className="text-accent text-sm font-medium tracking-wider">SCROLL TO EXPLORE</span>
       </div>
     </div>
   )
@@ -116,7 +116,7 @@ function QuoteSection() {
         <blockquote className="text-3xl md:text-4xl font-light italic leading-relaxed mb-8 text-gray-800">
           "Abstract art is the language of the soul, expressing what words cannot capture through color and form."
         </blockquote>
-        <p className={`text-lg text-[#d4a574] font-medium tracking-wider transition-all duration-1000 delay-300 ${
+        <p className={`text-lg text-accent font-medium tracking-wider transition-all duration-1000 delay-300 ${
           isInView ? 'opacity-100' : 'opacity-0'
         }`}>— RADKA GICHEVA</p>
         <div className="absolute -top-10 -left-10 text-8xl text-gray-100 font-serif">"</div>
@@ -143,7 +143,7 @@ function FeaturedWorkCard({ work, index }: { work: any, index: number }) {
         href={`/artwork/${work.id}`}
         className="group cursor-pointer block"
       >
-      <div className="relative aspect-[4/5] mb-6 overflow-hidden bg-gray-100">
+      <div className="relative aspect-[4/5] mb-6 overflow-hidden bg-gradient-start rounded-card shadow-card hover:shadow-card-hover transition-all duration-motion card-hover">
         <ArtworkImage 
           title={work.title} 
           width={400} 
@@ -155,9 +155,9 @@ function FeaturedWorkCard({ work, index }: { work: any, index: number }) {
           <p className="text-sm font-medium">VIEW DETAILS →</p>
         </div>
       </div>
-      <h3 className="text-2xl mb-2 group-hover:text-[#d4a574] transition-colors">{work.title}</h3>
+      <h3 className="text-2xl mb-2 text-primary group-hover:text-accent transition-colors duration-motion">{work.title}</h3>
       <p className="text-gray-600 mb-1 font-light">{work.size}</p>
-      <p className="text-xl font-semibold text-gray-900">{work.price}</p>
+      <p className="text-xl font-semibold text-accent">{work.price}</p>
     </Link>
     </div>
   )

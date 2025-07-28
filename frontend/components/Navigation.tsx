@@ -37,7 +37,7 @@ export default function Navigation() {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-motion ${
         scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-4' : 'bg-white/80 backdrop-blur-sm py-6'
       }`}
       role="navigation"
@@ -46,8 +46,7 @@ export default function Navigation() {
       <div className="container mx-auto px-6 flex justify-between items-center">
         <Link 
           href="/" 
-          className="text-2xl font-bold tracking-tight hover:opacity-70 transition-opacity"
-          style={{ fontFamily: 'Playfair Display, serif' }}
+          className="text-2xl font-bold tracking-tight text-primary hover:opacity-80 transition-opacity duration-motion"
           aria-label="Gicheva Art - Home"
         >
           GICHEVA ART
@@ -57,7 +56,7 @@ export default function Navigation() {
           {/* Search Button */}
           <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className="p-2 text-gray-700 hover:text-[#d4a574] transition-colors"
+            className="p-2 text-primary hover:text-accent transition-colors duration-motion"
             aria-label="Search artworks"
             aria-expanded={searchOpen}
           >
@@ -71,16 +70,16 @@ export default function Navigation() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative text-sm font-medium tracking-wide transition-all hover:text-[#d4a574] ${
+              className={`relative text-sm font-medium tracking-wide transition-all duration-motion hover:text-accent ${
                 pathname === item.href 
-                  ? 'text-[#d4a574]' 
-                  : 'text-gray-700'
+                  ? 'text-accent' 
+                  : 'text-primary'
               }`}
               aria-current={pathname === item.href ? 'page' : undefined}
             >
               {item.label}
               <span 
-                className={`absolute -bottom-1 left-0 h-0.5 bg-[#d4a574] transition-all duration-300 ${
+                className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-motion ${
                   pathname === item.href ? 'w-full' : 'w-0 hover:w-full'
                 }`}
                 aria-hidden="true"
@@ -116,13 +115,13 @@ export default function Navigation() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search artworks by title, style, or medium..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a574] focus:border-transparent"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-button transition-all duration-motion"
                 aria-label="Search artworks"
                 autoFocus
               />
               <button
                 type="submit"
-                className="px-6 py-2 bg-[#d4a574] text-white rounded-lg hover:bg-[#b8935f] transition-colors"
+                className="px-6 py-2 bg-accent text-white rounded-button hover:bg-accent/90 transition-all duration-motion button-hover"
                 aria-label="Submit search"
               >
                 Search
@@ -151,10 +150,10 @@ export default function Navigation() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block py-2 text-lg font-medium transition-colors ${
+                className={`block py-2 text-lg font-medium transition-colors duration-motion ${
                   pathname === item.href 
-                    ? 'text-[#d4a574]' 
-                    : 'text-gray-700 hover:text-[#d4a574]'
+                    ? 'text-accent' 
+                    : 'text-primary hover:text-accent'
                 }`}
               >
                 {item.label}
@@ -165,7 +164,7 @@ export default function Navigation() {
                 setSearchOpen(true)
                 setMobileMenuOpen(false)
               }}
-              className="flex items-center gap-2 py-2 text-lg font-medium text-gray-700 hover:text-[#d4a574] transition-colors"
+              className="flex items-center gap-2 py-2 text-lg font-medium text-primary hover:text-accent transition-colors duration-motion"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

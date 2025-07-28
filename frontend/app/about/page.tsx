@@ -6,14 +6,14 @@ export default function About() {
       <div className="max-w-6xl mx-auto">
         {/* Hero Section */}
         <div className="mb-16 animate-fade-in">
-          <h1 className="text-6xl md:text-7xl mb-4">About the Artist</h1>
-          <div className="w-24 h-1 bg-[#d4a574]"></div>
+          <h1 className="text-6xl md:text-7xl mb-4 text-primary">About the Artist</h1>
+          <div className="w-24 h-1 bg-accent"></div>
         </div>
 
         {/* Artist Info */}
         <div className="grid lg:grid-cols-5 gap-12 mb-24">
           <div className="lg:col-span-2">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-card shadow-card-hover">
               <Image
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80"
                 alt="Radka Gicheva"
@@ -27,21 +27,21 @@ export default function About() {
           </div>
           
           <div className="lg:col-span-3 flex flex-col justify-center">
-            <h2 className="text-5xl mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>Radka Gicheva</h2>
-            <p className="text-xl text-[#d4a574] font-medium mb-2">Contemporary Abstract Artist</p>
+            <h2 className="text-5xl mb-4 text-primary">Radka Gicheva</h2>
+            <p className="text-xl text-accent font-medium mb-2">Contemporary Abstract Artist</p>
             <p className="text-lg text-gray-600 mb-8">Based in Bulgaria • Creating since 2004</p>
             
             <div className="grid grid-cols-3 gap-6 text-center">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-3xl font-bold text-[#d4a574]">80+</p>
+              <div className="p-4 bg-gradient-start rounded-card transition-all duration-motion hover:shadow-card">
+                <p className="text-3xl font-bold text-accent">80+</p>
                 <p className="text-sm text-gray-600 mt-1">Original Artworks</p>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-3xl font-bold text-[#d4a574]">20+</p>
+              <div className="p-4 bg-gradient-start rounded-card transition-all duration-motion hover:shadow-card">
+                <p className="text-3xl font-bold text-accent">20+</p>
                 <p className="text-sm text-gray-600 mt-1">Years Experience</p>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-3xl font-bold text-[#d4a574]">15+</p>
+              <div className="p-4 bg-gradient-start rounded-card transition-all duration-motion hover:shadow-card">
+                <p className="text-3xl font-bold text-accent">15+</p>
                 <p className="text-sm text-gray-600 mt-1">Countries</p>
               </div>
             </div>
