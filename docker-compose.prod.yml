@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: gichevaart-backend:latest
+    image: gichevaartclaude-backend:latest
     ports:
       - "5001:8000"
     environment:
@@ -12,7 +12,7 @@ services:
       - gichevaart
 
   frontend:
-    image: gichevaart-frontend:latest
+    image: gichevaartclaude-frontend:latest
     ports:
       - "3002:3000"
     environment:
