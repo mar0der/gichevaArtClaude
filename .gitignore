@@ -21,6 +21,10 @@ dist/
 *.pem
 .idea/
 .vscode/
+# Local artwork library (large media not tracked)
+artwoks/
+# Local inventory export
+artwork_inventory.csv
 
 # Debug
 npm-debug.log*
