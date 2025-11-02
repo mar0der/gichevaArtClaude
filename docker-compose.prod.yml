@@ -1,25 +1,56 @@
-version: '3.8'
-
 services:
-  backend:
-    image: gichevaartclaude-backend:latest
-    ports:
-      - "5001:8000"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gichevaart-frontend
     environment:
-      - PYTHONUNBUFFERED=1
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    ports:
+      - "3002:3000"
+    depends_on:
+      - backend
     restart: unless-stopped
     networks:
       - gichevaart
 
-  frontend:
-    image: gichevaartclaude-frontend:latest
-    ports:
-      - "3002:3000"
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gichevaart-backend
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://backend:8000
+      - PORT=8000
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - SESSION_SECRET=${SESSION_SECRET}
+    ports:
+      - "5001:8000"
     depends_on:
-      - backend
+      - db
+    restart: unless-stopped
+    networks:
+      - gichevaart
+
+  db:
+    image: mariadb:11.8
+    container_name: gichevaart-db
+    stop_grace_period: 30s
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${DATABASE_NAME}
+      - MARIADB_USER=${DATABASE_USER}
+      - MARIADB_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
     restart: unless-stopped
     networks:
       - gichevaart
@@ -27,3 +58,6 @@ services:
 networks:
   gichevaart:
     driver: bridge
+
+volumes:
+  mariadb_data:
