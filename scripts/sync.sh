@@ -2,6 +2,7 @@
 set -euo pipefail
 
 declare -a TARGETS=()
+declare -a FILES=()
 
 usage() {
   cat <<'EOF'
@@ -10,10 +11,11 @@ Usage: sync.sh [options]
 Sync selected project folders to the remote server using rsync.
 
 Options:
-  --frontend        Sync the frontend folder only
-  --backend         Sync the backend folder only
-  --all             Sync both frontend and backend (default if no target given)
-  --dry-run         Show rsync changes without copying files
+  --frontend            Sync the frontend folder only
+  --backend             Sync the backend folder only
+  --all                 Sync both frontend and backend (default if no target given)
+  -f, --file <path>     Sync a specific file relative to the project root
+  --dry-run             Show rsync changes without copying files
   -h, --help        Show this help message
 EOF
 }
@@ -64,19 +66,26 @@ fi
 
 TARGETS=()
 DRY_RUN=false
-
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --frontend) add_target "frontend"; shift ;;
     --backend) add_target "backend"; shift ;;
     --all) TARGETS=("frontend" "backend"); shift ;;
+    -f|--file)
+      if [[ $# -lt 2 ]]; then
+        echo "Error: --file requires a path argument." >&2
+        exit 1
+      fi
+      FILES+=("$2")
+      shift 2
+      ;;
     --dry-run) DRY_RUN=true; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
   esac
 done
 
-if [[ ${#TARGETS[@]} -eq 0 ]]; then
+if [[ ${#TARGETS[@]} -eq 0 && ${#FILES[@]} -eq 0 ]]; then
   TARGETS=("frontend" "backend")
 fi
 
@@ -106,4 +115,41 @@ for target in "${TARGETS[@]}"; do
       exit 1
       ;;
   esac
+done
+
+sync_file() {
+  local rel_path="$1"
+  rel_path="${rel_path#./}"
+  if [[ -z "$rel_path" ]]; then
+    echo "Skip file: empty path provided." >&2
+    return
+  fi
+
+  local source="$PROJECT_ROOT/$rel_path"
+  if [[ ! -f "$source" ]]; then
+    echo "Skip file: '$rel_path' does not exist locally." >&2
+    return
+  fi
+
+  local rel_dir
+  rel_dir=$(dirname "$rel_path")
+  local remote_dir="$REMOTE_PROJECT_ROOT"
+  if [[ "$rel_dir" != "." ]]; then
+    remote_dir="$REMOTE_PROJECT_ROOT/$rel_dir"
+  fi
+
+  echo "Syncing file $rel_path -> $SSH_USER@$SSH_HOST:$remote_dir/"
+  ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p \"$remote_dir\""
+
+  local destination="$SSH_USER@$SSH_HOST:$REMOTE_PROJECT_ROOT/$rel_path"
+  local opts=(-az --progress)
+  if [[ "$DRY_RUN" == true ]]; then
+    opts+=(--dry-run --itemize-changes)
+  fi
+
+  rsync -e "ssh -p $SSH_PORT" "${opts[@]}" "$source" "$destination"
+}
+
+for file_path in "${FILES[@]}"; do
+  sync_file "$file_path"
 done

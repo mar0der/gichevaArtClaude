@@ -41,7 +41,7 @@ Always question the user's decision if they don't sound right!!!
 - Replace each `replace_me` placeholder locally; never commit actual secrets.
 
 ## Operations Scripts
-- `scripts/sync.sh [--frontend|--backend|--all] [--dry-run]` rsyncs source folders to the server; containers stay running in dev-watch mode and pick up changes automatically.
+- `scripts/sync.sh [--frontend|--backend|--all] [-f path] [--dry-run]` rsyncs source folders or specific files to the server; containers stay running in dev-watch mode and pick up changes automatically.
 - `scripts/deploy.sh [--frontend|--backend|--db|--phpmyadmin] [--start|--restart] [--migrate]` handles manual remote `docker compose` actions whenever restarts or migrations are required.
 
 ## Reference Versions (checked 2025-11-01)
