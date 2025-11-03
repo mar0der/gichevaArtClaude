@@ -102,20 +102,22 @@ SSH_PORT="${SSH_PORT:-22}"
 FRONTEND_EXCLUDES=(--exclude 'node_modules' --exclude '.next' --exclude '.turbo' --exclude '.DS_Store')
 BACKEND_EXCLUDES=(--exclude 'node_modules' --exclude 'dist' --exclude '.DS_Store')
 
-for target in "${TARGETS[@]}"; do
-  case "$target" in
-    frontend)
-      rsync_component "frontend" "$PROJECT_ROOT/frontend" "${FRONTEND_EXCLUDES[@]}"
-      ;;
-    backend)
-      rsync_component "backend" "$PROJECT_ROOT/backend" "${BACKEND_EXCLUDES[@]}"
-      ;;
-    *)
-      echo "Unknown target: $target" >&2
-      exit 1
-      ;;
-  esac
-done
+if [[ ${#TARGETS[@]} -gt 0 ]]; then
+  for target in "${TARGETS[@]}"; do
+    case "$target" in
+      frontend)
+        rsync_component "frontend" "$PROJECT_ROOT/frontend" "${FRONTEND_EXCLUDES[@]}"
+        ;;
+      backend)
+        rsync_component "backend" "$PROJECT_ROOT/backend" "${BACKEND_EXCLUDES[@]}"
+        ;;
+      *)
+        echo "Unknown target: $target" >&2
+        exit 1
+        ;;
+    esac
+  done
+fi
 
 sync_file() {
   local rel_path="$1"
@@ -150,6 +152,8 @@ sync_file() {
   rsync -e "ssh -p $SSH_PORT" "${opts[@]}" "$source" "$destination"
 }
 
-for file_path in "${FILES[@]}"; do
-  sync_file "$file_path"
-done
+if [[ ${#FILES[@]} -gt 0 ]]; then
+  for file_path in "${FILES[@]}"; do
+    sync_file "$file_path"
+  done
+fi

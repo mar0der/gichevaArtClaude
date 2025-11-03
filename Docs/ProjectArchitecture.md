@@ -1,4 +1,5 @@
 Always question the user's decision if they don't sound right!!!
+Do not commit after every command; batch logical changes together.
 
 ## Target Stack
 - Frontend: existing Next.js/React UI continued and expanded for production, styled with Tailwind CSS plus shared global design tokens (Playfair Display and Inter font pairing, animation utilities).
