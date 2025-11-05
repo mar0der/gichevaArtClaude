@@ -29,6 +29,7 @@ Do not commit after every command; batch logical changes together.
 - Deployment flow: develop locally, sync via `scripts/sync.sh`, and let its automatic restart run the containers in `npm run dev` mode.
 - HTTPS managed by Nginx + Let’s Encrypt on the host; certificates already provisioned for `www.gichevaart.com`.
 - Keep the root `.env` synced to `/var/www/gichevaart/.env` so Docker has current secrets and URLs.
+- PhpMyAdmin prompts for DB credentials—use the `DATABASE_USER` / `DATABASE_PASSWORD` defined in `.env`.
 
 ## Environment Variables (.env Template)
 - `.env` at the repo root (gitignored) captures all secrets and operational config.
@@ -44,6 +45,8 @@ Do not commit after every command; batch logical changes together.
 ## Operations Scripts
 - `scripts/sync.sh [--frontend|--backend|--all] [-f path] [--dry-run]` rsyncs source folders or specific files to the server; containers stay running in dev-watch mode and pick up changes automatically.
 - `scripts/deploy.sh [--frontend|--backend|--db|--phpmyadmin] [--start|--restart] [--migrate]` handles manual remote `docker compose` actions whenever restarts or migrations are required.
+- `scripts/db_push.sh [path/to/sql]` loads `data/artworks.sql` (or another SQL dump) into MariaDB using credentials sourced from `.env`.
+- `scripts/db_backup.sh [out.sql]` captures the current database state into `data/backups/`, enabling pull-backups of server changes.
 
 ## Reference Versions (checked 2025-11-01)
 - Node.js 24.11.0 LTS “Krypton” – https://nodejs.org/en/download

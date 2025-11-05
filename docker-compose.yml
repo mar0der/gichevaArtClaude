@@ -77,8 +77,7 @@ services:
     environment:
       - PMA_HOST=db
       - PMA_PORT=3306
-      - PMA_USER=${DATABASE_USER}
-      - PMA_PASSWORD=${DATABASE_PASSWORD}
+      - PMA_ARBITRARY=0
     ports:
       - "${PMA_PORT:-8090}:80"
     depends_on:
