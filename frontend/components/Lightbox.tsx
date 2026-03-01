@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useCallback } from 'react'
-import Image from 'next/image'
 import ArtworkImage from './ArtworkImage'
 
 interface LightboxProps {
@@ -9,6 +8,7 @@ interface LightboxProps {
   onClose: () => void
   artwork: {
     id: number
+    slug: string
     title: string
     price: string
     size: string
@@ -28,31 +28,32 @@ export default function Lightbox({
   onNext,
   onPrevious,
   hasNext = false,
-  hasPrevious = false
+  hasPrevious = false,
 }: LightboxProps) {
-  // Handle keyboard navigation
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (!isOpen) return
-    
-    switch (e.key) {
-      case 'Escape':
-        onClose()
-        break
-      case 'ArrowRight':
-        if (hasNext && onNext) onNext()
-        break
-      case 'ArrowLeft':
-        if (hasPrevious && onPrevious) onPrevious()
-        break
-    }
-  }, [isOpen, onClose, onNext, onPrevious, hasNext, hasPrevious])
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!isOpen) return
+
+      switch (e.key) {
+        case 'Escape':
+          onClose()
+          break
+        case 'ArrowRight':
+          if (hasNext && onNext) onNext()
+          break
+        case 'ArrowLeft':
+          if (hasPrevious && onPrevious) onPrevious()
+          break
+      }
+    },
+    [isOpen, onClose, onNext, onPrevious, hasNext, hasPrevious]
+  )
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
 
-  // Prevent body scroll when lightbox is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -67,7 +68,7 @@ export default function Lightbox({
   if (!isOpen) return null
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
       role="dialog"
@@ -75,7 +76,6 @@ export default function Lightbox({
       aria-label="Artwork lightbox"
     >
       <div className="relative h-full flex items-center justify-center p-4 md:p-8">
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-10 p-2 text-white/80 hover:text-white transition-colors"
@@ -86,7 +86,6 @@ export default function Lightbox({
           </svg>
         </button>
 
-        {/* Navigation buttons */}
         {hasPrevious && onPrevious && (
           <button
             onClick={(e) => {
@@ -117,16 +116,17 @@ export default function Lightbox({
           </button>
         )}
 
-        {/* Main content */}
-        <div 
+        <div
           className="relative max-w-7xl w-full h-full flex flex-col lg:flex-row items-center gap-8"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Image */}
           <div className="flex-1 h-full flex items-center justify-center">
             <div className="relative w-full h-full max-h-[80vh] aspect-[4/5]">
               <ArtworkImage
+                slug={artwork.slug}
                 title={artwork.title}
+                variant="fullsize"
+                imageIndex={1}
                 width={800}
                 height={1000}
                 className="rounded-lg overflow-hidden shadow-2xl"
@@ -136,12 +136,11 @@ export default function Lightbox({
             </div>
           </div>
 
-          {/* Info panel */}
           <div className="lg:w-96 bg-white/10 backdrop-blur-md rounded-lg p-8 text-white">
             <h2 className="text-3xl mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
               {artwork.title}
             </h2>
-            
+
             <div className="space-y-4 mb-8">
               <div className="flex justify-between items-center py-3 border-b border-white/20">
                 <span className="text-white/70">Medium</span>
@@ -149,13 +148,11 @@ export default function Lightbox({
               </div>
               <div className="flex justify-between items-center py-3 border-b border-white/20">
                 <span className="text-white/70">Size</span>
-                <span className="font-medium">{artwork.size}"</span>
+                <span className="font-medium">{artwork.size}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-white/20">
                 <span className="text-white/70">Price</span>
-                <span className="text-2xl font-semibold text-[#d4a574]">
-                  {artwork.available ? artwork.price : 'SOLD'}
-                </span>
+                <span className="text-2xl font-semibold text-[#d4a574]">{artwork.available ? artwork.price : 'SOLD'}</span>
               </div>
             </div>
 
@@ -164,14 +161,10 @@ export default function Lightbox({
                 INQUIRE ABOUT THIS PIECE
               </button>
             ) : (
-              <div className="text-center py-4 bg-red-500/20 rounded text-red-300 font-medium">
-                This artwork has been sold
-              </div>
+              <div className="text-center py-4 bg-red-500/20 rounded text-red-300 font-medium">This artwork has been sold</div>
             )}
 
-            <p className="mt-6 text-sm text-white/60 text-center">
-              International shipping available
-            </p>
+            <p className="mt-6 text-sm text-white/60 text-center">International shipping available</p>
           </div>
         </div>
       </div>
