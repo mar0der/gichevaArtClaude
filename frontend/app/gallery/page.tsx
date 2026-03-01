@@ -22,6 +22,7 @@ function GalleryContent() {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [selectedArtworkIndex, setSelectedArtworkIndex] = useState(0)
+  const [cardAspectRatios, setCardAspectRatios] = useState<Record<number, number>>({})
 
   useEffect(() => {
     setIsLoading(true)
@@ -72,6 +73,17 @@ function GalleryContent() {
   }
 
   const selectedArtwork: Artwork | undefined = displayedArtworks[selectedArtworkIndex]
+
+  const ratioFromSize = (size: string): number => {
+    const match = size.match(/(\d{2,3})\s*x\s*(\d{2,3})/i)
+    if (!match) return 4 / 5
+    const w = Number(match[1])
+    const h = Number(match[2])
+    if (!Number.isFinite(w) || !Number.isFinite(h) || h <= 0) return 4 / 5
+    return Math.max(0.45, Math.min(1.8, w / h))
+  }
+
+  const getCardRatio = (artwork: Artwork): number => cardAspectRatios[artwork.id] ?? ratioFromSize(artwork.size)
 
   return (
     <>
@@ -170,7 +182,10 @@ function GalleryContent() {
                       className="cursor-pointer transform transition-all duration-motion hover:-translate-y-1 group"
                       onClick={() => openLightbox(index)}
                     >
-                      <div className="relative aspect-[4/5] bg-gradient-start overflow-hidden rounded-card shadow-card hover:shadow-card-hover transition-all duration-motion card-hover">
+                      <div
+                        className="relative bg-gradient-start overflow-hidden rounded-card shadow-card hover:shadow-card-hover transition-all duration-motion card-hover"
+                        style={{ aspectRatio: `${getCardRatio(artwork)}` }}
+                      >
                         <ArtworkImage
                           slug={artwork.slug}
                           title={artwork.title}
@@ -179,6 +194,14 @@ function GalleryContent() {
                           width={400}
                           height={500}
                           className="transform transition-transform duration-motion group-hover:scale-110"
+                          onImageReady={(width, height) => {
+                            if (!width || !height) return
+                            const nextRatio = Math.max(0.45, Math.min(1.8, width / height))
+                            setCardAspectRatios((prev) => {
+                              if (prev[artwork.id] && Math.abs(prev[artwork.id] - nextRatio) < 0.01) return prev
+                              return { ...prev, [artwork.id]: nextRatio }
+                            })
+                          }}
                         />
                         {!artwork.available && (
                           <div className="absolute top-4 right-4 bg-status-error text-white px-3 py-1 text-xs font-medium uppercase tracking-wider rounded">

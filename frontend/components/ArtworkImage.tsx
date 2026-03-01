@@ -13,6 +13,7 @@ interface ArtworkImageProps {
   sizes?: string
   variant?: 'thumb' | 'fullsize'
   imageIndex?: number
+  onImageReady?: (width: number, height: number) => void
 }
 
 const shimmer = (w: number, h: number) => `
@@ -49,6 +50,7 @@ export default function ArtworkImage({
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
   variant = 'thumb',
   imageIndex = 1,
+  onImageReady,
 }: ArtworkImageProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
@@ -98,7 +100,10 @@ export default function ArtworkImage({
           placeholder="blur"
           blurDataURL={getBlurDataURL(width, height)}
           priority={priority}
-          onLoadingComplete={() => setIsLoading(false)}
+          onLoadingComplete={(img) => {
+            setIsLoading(false)
+            onImageReady?.(img.naturalWidth, img.naturalHeight)
+          }}
           onError={() => {
             if (format === 'webp') {
               setFormat('jpg')
