@@ -2,6 +2,10 @@
 
 Modern portfolio website for abstract artist Radka Gicheva, featuring her artwork collection with gallery, biography, and contact information.
 
+## Repository Map
+
+- [Repository Index](./REPO_INDEX.md)
+
 ## Features
 
 - 🎨 Responsive image gallery with filtering by category

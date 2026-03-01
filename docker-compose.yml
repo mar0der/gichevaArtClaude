@@ -23,6 +23,7 @@ services:
     restart: unless-stopped
     networks:
       - gichevaart
+      - web_network
 
   backend:
     image: node:20-bullseye
@@ -89,6 +90,9 @@ services:
 networks:
   gichevaart:
     driver: bridge
+  web_network:
+    external: true
+    name: web_network
 
 volumes:
   frontend_node_modules:
