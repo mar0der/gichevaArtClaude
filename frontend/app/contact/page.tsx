@@ -40,33 +40,42 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
-    
+
     setIsSubmitting(true)
     setErrors({})
-    
-    // Simulate form submission
-    setTimeout(() => {
-      // Simulate random error for demo
-      const success = Math.random() > 0.2
-      
-      if (success) {
-        console.log('Form submitted:', formData)
-        setSubmitStatus('success')
-        setFormData({ name: '', email: '', subject: '', message: '' })
-        
-        // Reset status after 5 seconds
-        setTimeout(() => setSubmitStatus('idle'), 5000)
-      } else {
-        setSubmitStatus('error')
-        setTimeout(() => setSubmitStatus('idle'), 5000)
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          sourcePage: window.location.pathname,
+        }),
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload.error || 'Failed to send message')
       }
-      
+
+      setSubmitStatus('success')
+      setFormData({ name: '', email: '', subject: '', message: '' })
+
+      setTimeout(() => setSubmitStatus('idle'), 5000)
+    } catch (error) {
+      console.error('Contact form submit failed:', error)
+      setSubmitStatus('error')
+      setTimeout(() => setSubmitStatus('idle'), 5000)
+    } finally {
       setIsSubmitting(false)
-    }, 1500)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -246,8 +255,8 @@ export default function Contact() {
                   </svg>
                   <div>
                     <p className="font-medium text-gray-900">Email</p>
-                    <a href="mailto:info@gichevaart.com" className="text-[#d4a574] hover:text-[#b8935f] transition-colors">
-                      info@gichevaart.com
+                    <a href="mailto:hello@gichevaart.com" className="text-[#d4a574] hover:text-[#b8935f] transition-colors">
+                      hello@gichevaart.com
                     </a>
                   </div>
                 </div>
